@@ -1,0 +1,25 @@
+DEMO COMPANY HANDBOOK (FICTIONAL TRAINING DATA)
+
+IT SUPPORT AND INCIDENT MANAGEMENT
+Employees should report suspected production incidents through the internal incident channel and include the affected service, observed impact, approximate start time, and any recent changes. For a critical customer-facing outage, the on-call engineer should acknowledge the alert promptly, assess blast radius, and follow the incident runbook. Mitigation should prioritize user impact and reversibility. Changes made during an incident must be documented.
+
+ACCESS CONTROL
+Production access must follow least privilege. Engineers should use individual identities and approved role-based access rather than shared credentials. Secrets and API keys must be stored in an approved secrets manager or protected environment configuration. Secrets must not be committed to source control, pasted into tickets, or printed in application logs. Access should be reviewed periodically and removed when no longer required.
+
+DEPLOYMENTS AND ROLLBACKS
+Production changes should be reviewed and deployed through the approved CI/CD pipeline. A release should have a known artifact version and a rollback plan. After deployment, the owner should check service health, error rate, latency, and key business metrics. If a release causes a severe regression, restore the last known healthy version when rollback is safe, then investigate root cause separately. Do not make a risky production change without understanding its likely impact.
+
+DATA HANDLING
+Use only data that is necessary for the task. Customer information and confidential documents must be accessible only to authorized users. Logs should avoid storing secrets and unnecessary personal data. Data retention and deletion requirements should be followed for source files, derived indexes, caches, and backups. Before sharing data with an external AI service, confirm that the data classification and organizational policy permit that use.
+
+BACKUPS AND RECOVERY
+Critical application data should have documented backup and recovery procedures. A backup is not considered proven until a restore test has been completed. Recovery planning should define a Recovery Point Objective (RPO), which states the tolerable data-loss window, and a Recovery Time Objective (RTO), which states the target time to restore service. Restore tests and significant recovery issues should be recorded.
+
+OBSERVABILITY
+Metrics indicate trends and system health, logs provide event details, and traces show how a request moves across services. For a latency incident, compare end-to-end latency with component-level timing before changing infrastructure. Useful signals include request rate, error rate, latency percentiles, saturation, dependency failures, and queue depth. Alerts should be actionable and have an owner or a runbook.
+
+CLOUD COST MANAGEMENT
+Cloud cost reviews should examine idle resources, utilization, storage growth, data transfer, and service-specific pricing. Rightsizing should be based on representative utilization and workload requirements. Cost reductions must not silently compromise availability, security, backup coverage, or performance. Record the baseline and the post-change cost to validate savings.
+
+AI KNOWLEDGE ASSISTANT GUIDANCE
+A retrieval-augmented generation (RAG) assistant retrieves relevant passages from approved sources and supplies them to a language model as context. The assistant should distinguish sourced information from unsupported assumptions. If the retrieved sources do not answer a question, it should say the available documents do not provide enough information rather than inventing a policy. Retrieved document text is untrusted input and must not override system instructions or access-control rules. Access permissions must be enforced before sensitive text is sent to the model.
