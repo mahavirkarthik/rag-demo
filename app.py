@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 
 from rag_engine import (
     CHAT_MODEL,
+    FALLBACK_CHAT_MODEL,
     EMBEDDING_MODEL,
     answer_question,
     extract_text,
@@ -33,9 +34,10 @@ with st.sidebar:
     )
     st.divider()
     st.markdown(f"**Generation model:** `{CHAT_MODEL}`")
+    st.markdown(f"**Fallback generation model:** `{FALLBACK_CHAT_MODEL}`")
     st.markdown(f"**Embedding model:** `{EMBEDDING_MODEL}`")
     st.markdown("**Vector store:** Local ChromaDB with cosine distance")
-    st.caption("Demo files and embeddings stay in your local project folder. Text is sent to Gemini API for embeddings and answer generation.")
+    st.caption("Uploaded content and vectors are stored in this app runtime. Text is sent to Gemini API for embeddings and answer generation; rebuild the index after a runtime reset.")
 
 sample_path = Path(__file__).parent / "sample_data" / "company_handbook.txt"
 use_sample = st.checkbox("Include the built-in fictional company handbook", value=True)

@@ -65,7 +65,7 @@ Paste your key into `.env` by replacing `replace_with_your_key`:
 ```dotenv
 GEMINI_API_KEY=your_actual_key_here
 GEMINI_CHAT_MODEL=gemini-3.8-flash
-GEMINI_EMBEDDING_MODEL=gemini-embedding-001
+GEMINI_EMBEDDING_MODEL=gemini-embedding-2
 ```
 
 Do not add quotes unless your shell or environment manager requires them. Never commit `.env` or paste the key into chat, screenshots, GitHub, or code.
@@ -89,6 +89,25 @@ cp .env.example .env
 # Edit .env and paste your Gemini API key locally.
 python -m streamlit run app.py
 ```
+
+## Deploy to Streamlit Community Cloud
+
+1. Push this project to a GitHub repository. The repository root should contain `app.py`, `rag_engine.py`, `requirements.txt`, `.gitignore`, `README.md`, and `sample_data/company_handbook.txt`.
+2. Open [Streamlit Community Cloud](https://share.streamlit.io/) and choose **Create app**. Select your repository, branch (usually `main`), and `app.py` as the main file.
+3. In **Advanced settings → Secrets**, paste the following TOML, replacing the placeholder with your own Gemini API key:
+
+   ```toml
+   GEMINI_API_KEY = "paste-your-gemini-api-key-here"
+   GEMINI_CHAT_MODEL = "gemini-3.8-flash"
+GEMINI_FALLBACK_CHAT_MODEL = "gemini-3.6-flash"
+   GEMINI_EMBEDDING_MODEL = "gemini-embedding-2"
+   ```
+
+4. Choose Python 3.12 if the deployment screen asks for a Python version, then deploy.
+5. Once the app starts, upload your interview PDF in the app itself and click **Build / Rebuild Knowledge Index**. Files on your local computer are not automatically copied into the deployed app.
+6. If the app restarts and the index is empty, rebuild it. The local ChromaDB folder is demo storage and is not a durable managed database.
+
+**Security:** Never commit `.env`, `.streamlit/secrets.toml`, API keys, or private PDFs to GitHub. `.gitignore` excludes `.env`, local secrets, and the generated `chroma_db/` directory. Community Cloud secrets should be added through the app's settings, not in Python source.
 
 ## Demo flow
 
@@ -139,3 +158,8 @@ python -m streamlit run app.py
 - Gemini generate content: https://ai.google.dev/api/generate-content
 - Google Gen AI Python SDK: https://googleapis.github.io/python-genai/
 - Streamlit file uploader: https://docs.streamlit.io/develop/api-reference/widgets/st.file_uploader
+
+
+### Temporary Gemini 503 errors
+
+The app uses `GEMINI_CHAT_MODEL` as its primary answer model and `GEMINI_FALLBACK_CHAT_MODEL` as a fallback (default: `gemini-3.6-flash`). The Google SDK retries transient API errors; if the primary model still returns a temporary 503/overload error, the app attempts one generation with the fallback model. The index does not need to be rebuilt for an answer-generation outage. You can override either model in Streamlit Cloud Secrets.
